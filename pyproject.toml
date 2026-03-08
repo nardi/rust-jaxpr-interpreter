@@ -1,0 +1,18 @@
+[build-system]
+requires = ["maturin>=1.12,<2.0"]
+build-backend = "maturin"
+
+[project]
+name = "rust-jaxpr-interpreter"
+requires-python = ">=3.11"
+classifiers = [
+    "Programming Language :: Rust",
+    "Programming Language :: Python :: Implementation :: CPython",
+    "Programming Language :: Python :: Implementation :: PyPy",
+]
+dynamic = ["version"]
+dependencies = ["jax>=0.4.13", "numpy>=2.4.2"]
+[project.optional-dependencies]
+tests = ["pytest"]
+[tool.maturin]
+python-source = "python"

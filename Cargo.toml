@@ -1,0 +1,13 @@
+[package]
+name = "rust-jaxpr-interpreter"
+version = "0.1.0"
+edition = "2024"
+
+[lib]
+name = "rust_jaxpr_interpreter"
+crate-type = ["cdylib"]
+
+[dependencies]
+ndarray = "0.17.2"
+numpy = "0.28.0"
+pyo3 = "0.28.2"
