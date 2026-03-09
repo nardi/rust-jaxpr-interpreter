@@ -8,6 +8,7 @@ name = "rust_jaxpr_interpreter"
 crate-type = ["cdylib"]
 
 [dependencies]
+enum_dispatch = "0.3.13"
 ndarray = "0.17.2"
 numpy = "0.28.0"
 pyo3 = "0.28.2"
