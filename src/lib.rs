@@ -25,13 +25,12 @@ mod rust_jaxpr_interpreter {
         println!("consts: {:?}", consts);
         println!("args: {:?}", args);
 
-        let args_arrays = args.iter().map(|arr| arr.as_array()).collect::<Vec<_>>();
-
-        let interpreter = Interpreter {};
-
-        // TEMP: We know there's only one equation and it's `integer_pow`.
-        let first_eqn = &jaxpr.eqns[0];
-        let out_arrs = interpreter.eval_eqn(&first_eqn, &args_arrays)?;
+        // Convert the input arguments to array views and evaluate the Jaxpr.
+        let out_arrs = Interpreter::eval_jaxpr(
+            &jaxpr,
+            consts.iter().map(|arr| arr.as_array()),
+            args.iter().map(|arr| arr.as_array()),
+        )?;
 
         // Convert the outputs to a list of Numpy arrays to match the `eval_jaxpr` API.
         PyList::new(
