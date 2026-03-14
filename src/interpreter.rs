@@ -117,6 +117,23 @@ impl<'py> Interpreter<'py> {
                             .powi(eqn.params.y),
                     ),
                 ),
+                JaxprEqn::Add(eqn) => interpreter.write_one(
+                    &eqn.outvars[0],
+                    JaxprResult::Local({
+                        let invals = interpreter.read_or_resolve(&eqn.invars)?;
+                        &invals[0] + &invals[1]
+                    }),
+                ),
+                JaxprEqn::Mul(eqn) => interpreter.write_one(
+                    &eqn.outvars[0],
+                    JaxprResult::Local({
+                        let invals = interpreter.read_or_resolve(&eqn.invars)?;
+                        &invals[0] * &invals[1]
+                    }),
+                ),
+                JaxprEqn::Unknown(eqn) => {
+                    todo!("Primitive {} not yet implemented.", eqn.primitive.name)
+                }
             };
         }
 

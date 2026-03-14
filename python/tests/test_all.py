@@ -12,7 +12,7 @@ JaxprAndArgs = tuple[jax.extend.core.ClosedJaxpr, tuple[np.ndarray, ...]]
 @pytest.fixture
 def closed_jaxpr_and_args() -> JaxprAndArgs:
     def f(x):
-        return x**2
+        return (np.array([2.0, 4, 6]) * x) ** 2 + 5
 
     x = np.array([1.0, 2, 3])
 

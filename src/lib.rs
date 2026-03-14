@@ -21,7 +21,7 @@ mod rust_jaxpr_interpreter {
         args: Vec<PyArrayLikeDyn<f64>>,
     ) -> PyResult<Bound<'py, PyList>> {
         // TEMP: print the input arguments to check they are correct.
-        println!("jaxpr: {:?}", jaxpr);
+        println!("jaxpr: {:#?}", jaxpr);
         println!("consts: {:?}", consts);
         println!("args: {:?}", args);
 
