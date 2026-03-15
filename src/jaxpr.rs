@@ -71,12 +71,13 @@ pub mod binary_primitives;
 pub mod unary_primitives;
 
 use binary_primitives::{AddEqn, MulEqn};
-use unary_primitives::IntegerPowEqn;
+use unary_primitives::{IntegerPowEqn, SinEqn};
 
 #[derive(Debug)]
 #[enum_dispatch]
 pub enum JaxprEqn<'py> {
-    IntegerPow(IntegerPowEqn<'py>),
+    IntegerPow(IntegerPowEqn),
+    Sin(SinEqn),
     Add(AddEqn<'py>),
     Mul(MulEqn<'py>),
     Unknown(UnknownEqn<'py>),
@@ -90,6 +91,7 @@ impl<'a, 'py> FromPyObject<'a, 'py> for JaxprEqn<'py> {
 
         Ok(match primitive_name.as_str() {
             IntegerPowEqn::NAME => JaxprEqn::IntegerPow(obj.extract()?),
+            SinEqn::NAME => JaxprEqn::Sin(obj.extract()?),
             AddEqn::NAME => JaxprEqn::Add(obj.extract()?),
             MulEqn::NAME => JaxprEqn::Mul(obj.extract()?),
             _ => JaxprEqn::Unknown(obj.extract()?),

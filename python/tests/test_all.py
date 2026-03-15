@@ -2,6 +2,7 @@ import numpy as np
 import jax
 import jax.core
 import jax.extend.core
+import jax.numpy as jnp
 import pytest
 
 import rust_jaxpr_interpreter
@@ -12,7 +13,7 @@ JaxprAndArgs = tuple[jax.extend.core.ClosedJaxpr, tuple[np.ndarray, ...]]
 @pytest.fixture
 def closed_jaxpr_and_args() -> JaxprAndArgs:
     def f(x):
-        return (np.array([2.0, 4, 6]) * x) ** 2 + 5
+        return (np.array([2.0, 4, 6]) * jnp.sin(x)) ** 2 + 5
 
     x = np.array([1.0, 2, 3])
 

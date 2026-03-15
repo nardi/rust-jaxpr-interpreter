@@ -1,6 +1,6 @@
 use pyo3::prelude::*;
 
-use super::{Atom, Var};
+use super::Var;
 
 #[derive(Debug, FromPyObject, Eq, PartialEq)]
 #[pyo3(from_item_all)]
@@ -9,12 +9,22 @@ pub struct IntegerPowParams {
 }
 
 #[derive(Debug, FromPyObject)]
-pub struct IntegerPowEqn<'py> {
-    pub invars: [Atom<'py>; 1],
+pub struct IntegerPowEqn {
+    pub invars: [Var; 1],
     pub outvars: [Var; 1],
     pub params: IntegerPowParams,
 }
 
-impl<'py> IntegerPowEqn<'py> {
+impl IntegerPowEqn {
     pub const NAME: &'static str = "integer_pow";
+}
+
+#[derive(Debug, FromPyObject)]
+pub struct SinEqn {
+    pub invars: [Var; 1],
+    pub outvars: [Var; 1],
+}
+
+impl SinEqn {
+    pub const NAME: &'static str = "sin";
 }
