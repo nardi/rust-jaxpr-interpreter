@@ -29,11 +29,7 @@ pub struct Var {
 // TODO: figure out why the generic version complains about lifetimes.
 fn try_array_dunder<'a, 'py>(
     obj: &Bound<'py, PyAny>,
-) -> Result<PyArrayLikeDyn<'py, f64, AllowTypeChange>, PyErr>
-// where
-//     T: FromPyObject<'a, 'py, Error = PyErr>,
-//     'py: 'a,
-{
+) -> Result<PyArrayLikeDyn<'py, f64, AllowTypeChange>, PyErr> {
     obj.getattr("__array__")
         .and_then(|attr| attr.call0())
         .and_then(|arr| arr.extract::<PyArrayLikeDyn<'py, f64, AllowTypeChange>>())
@@ -71,42 +67,11 @@ pub struct UnknownEqn<'py> {
     pub params: Bound<'py, PyDict>,
 }
 
-#[derive(Debug, FromPyObject, Eq, PartialEq)]
-#[pyo3(from_item_all)]
-pub struct IntegerPowParams {
-    pub y: i32,
-}
+pub mod binary_primitives;
+pub mod unary_primitives;
 
-#[derive(Debug, FromPyObject)]
-pub struct IntegerPowEqn<'py> {
-    pub invars: [Atom<'py>; 1],
-    pub outvars: [Var; 1],
-    pub params: IntegerPowParams,
-}
-
-impl<'py> IntegerPowEqn<'py> {
-    const NAME: &'static str = "integer_pow";
-}
-
-#[derive(Debug, FromPyObject)]
-pub struct AddEqn<'py> {
-    pub invars: [Atom<'py>; 2],
-    pub outvars: [Var; 1],
-}
-
-impl<'py> AddEqn<'py> {
-    const NAME: &'static str = "add";
-}
-
-#[derive(Debug, FromPyObject)]
-pub struct MulEqn<'py> {
-    pub invars: [Atom<'py>; 2],
-    pub outvars: [Var; 1],
-}
-
-impl<'py> MulEqn<'py> {
-    const NAME: &'static str = "mul";
-}
+use binary_primitives::{AddEqn, MulEqn};
+use unary_primitives::IntegerPowEqn;
 
 #[derive(Debug)]
 #[enum_dispatch]
