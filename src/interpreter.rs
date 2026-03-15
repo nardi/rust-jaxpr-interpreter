@@ -1,10 +1,11 @@
 use std::{collections::HashMap, iter::zip};
 
+use enum_dispatch::enum_dispatch;
 use ndarray::{ArrayD, ArrayViewD};
 use numpy::PyArrayMethods;
 use pyo3::{PyErr, exceptions::PyKeyError};
 
-use crate::jaxpr::{Atom, Jaxpr, JaxprEqn, Var};
+use crate::jaxpr::{Atom, Jaxpr, UnknownEqn, Var};
 
 #[derive(Debug)]
 enum JaxprResult<'py> {
@@ -26,6 +27,11 @@ impl<'py> JaxprResult<'py> {
             JaxprResult::Local(arr) => arr,
         }
     }
+}
+
+#[enum_dispatch(JaxprEqn)]
+pub trait EvalJaxprEqn<'py> {
+    fn eval_eqn(&'py self, interpreter: &mut Interpreter<'py>) -> Result<(), PyErr>;
 }
 
 #[derive(Debug)]
@@ -108,36 +114,20 @@ impl<'py> Interpreter<'py> {
 
         // Loop over equations, executing each one.
         for eqn in jaxpr.eqns.iter() {
-            match eqn {
-                JaxprEqn::IntegerPow(eqn) => interpreter.write_one(
-                    &eqn.outvars[0],
-                    JaxprResult::Local(
-                        interpreter
-                            .read_or_resolve_one(&eqn.invars[0])?
-                            .powi(eqn.params.y),
-                    ),
-                ),
-                JaxprEqn::Add(eqn) => interpreter.write_one(
-                    &eqn.outvars[0],
-                    JaxprResult::Local({
-                        let invals = interpreter.read_or_resolve(&eqn.invars)?;
-                        &invals[0] + &invals[1]
-                    }),
-                ),
-                JaxprEqn::Mul(eqn) => interpreter.write_one(
-                    &eqn.outvars[0],
-                    JaxprResult::Local({
-                        let invals = interpreter.read_or_resolve(&eqn.invars)?;
-                        &invals[0] * &invals[1]
-                    }),
-                ),
-                JaxprEqn::Unknown(eqn) => {
-                    todo!("Primitive {} not yet implemented.", eqn.primitive.name)
-                }
-            };
+            eqn.eval_eqn(&mut interpreter)?;
         }
 
         // Take out the outputs (with ownership).
         interpreter.take_or_resolve(&jaxpr.outvars)
     }
 }
+
+impl<'py> EvalJaxprEqn<'py> for UnknownEqn<'py> {
+    fn eval_eqn(&'py self, interpreter: &mut Interpreter<'py>) -> Result<(), PyErr> {
+        let _ = interpreter;
+        todo!("Primitive {} not yet implemented.", self.primitive.name)
+    }
+}
+
+mod binary_primitives;
+mod unary_primitives;

@@ -1,7 +1,12 @@
+use enum_dispatch::enum_dispatch;
 use numpy::{AllowTypeChange, PyArrayLikeDyn};
 use pyo3::{prelude::*, types::PyDict};
 
 use crate::boxed_slice::BoxedSlice;
+
+// These imports are necessary for enum_dispatch to work. TODO: figure out why, it kind of ruins the
+// separation of the IR and the interpreter.
+use crate::interpreter::{EvalJaxprEqn, Interpreter};
 
 #[derive(Debug, FromPyObject, Eq, PartialEq, Hash, Clone)]
 pub struct ShapedArray {
@@ -104,6 +109,7 @@ impl<'py> MulEqn<'py> {
 }
 
 #[derive(Debug)]
+#[enum_dispatch]
 pub enum JaxprEqn<'py> {
     IntegerPow(IntegerPowEqn<'py>),
     Add(AddEqn<'py>),
