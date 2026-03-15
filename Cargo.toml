@@ -2,6 +2,8 @@
 name = "rust-jaxpr-interpreter"
 version = "0.1.0"
 edition = "2024"
+description = "Rust-based interpreter for JAX functions"
+readme = "README.md"
 
 [lib]
 name = "rust_jaxpr_interpreter"
