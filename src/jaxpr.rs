@@ -70,33 +70,15 @@ pub struct UnknownEqn<'py> {
 pub mod binary_primitives;
 pub mod unary_primitives;
 
-use binary_primitives::{AddEqn, MulEqn};
-use unary_primitives::{IntegerPowEqn, SinEqn};
+use binary_primitives::BinaryJaxprEqn;
+use unary_primitives::UnaryJaxprEqn;
 
-#[derive(Debug)]
+#[derive(Debug, FromPyObject)]
 #[enum_dispatch]
 pub enum JaxprEqn<'py> {
-    IntegerPow(IntegerPowEqn),
-    Sin(SinEqn),
-    Add(AddEqn<'py>),
-    Mul(MulEqn<'py>),
+    Unary(UnaryJaxprEqn),
+    Binary(BinaryJaxprEqn<'py>),
     Unknown(UnknownEqn<'py>),
-}
-
-impl<'a, 'py> FromPyObject<'a, 'py> for JaxprEqn<'py> {
-    type Error = PyErr;
-
-    fn extract(obj: Borrowed<'a, 'py, PyAny>) -> PyResult<Self> {
-        let primitive_name: String = obj.getattr("primitive")?.getattr("name")?.extract()?;
-
-        Ok(match primitive_name.as_str() {
-            IntegerPowEqn::NAME => JaxprEqn::IntegerPow(obj.extract()?),
-            SinEqn::NAME => JaxprEqn::Sin(obj.extract()?),
-            AddEqn::NAME => JaxprEqn::Add(obj.extract()?),
-            MulEqn::NAME => JaxprEqn::Mul(obj.extract()?),
-            _ => JaxprEqn::Unknown(obj.extract()?),
-        })
-    }
 }
 
 #[allow(dead_code)]

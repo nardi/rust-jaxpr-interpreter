@@ -149,5 +149,5 @@ impl<'py> EvalJaxprEqn<'py> for UnknownEqn<'py> {
     }
 }
 
-mod binary_primitives;
-mod unary_primitives;
+pub mod binary_primitives;
+pub mod unary_primitives;
