@@ -6,6 +6,8 @@ mod jaxpr;
 
 #[pymodule]
 mod rust_jaxpr_interpreter {
+    use std::env;
+
     use super::interpreter::Interpreter;
     use super::jaxpr::Jaxpr;
     use numpy::{PyArrayDyn, PyArrayLikeDyn};
@@ -20,10 +22,12 @@ mod rust_jaxpr_interpreter {
         consts: Vec<PyArrayLikeDyn<f64>>,
         args: Vec<PyArrayLikeDyn<f64>>,
     ) -> PyResult<Bound<'py, PyList>> {
-        // TEMP: print the input arguments to check they are correct.
-        println!("jaxpr: {:#?}", jaxpr);
-        println!("consts: {:?}", consts);
-        println!("args: {:?}", args);
+        if env::var("RJI_PRINT_JAXPR").is_ok() {
+            // Print the input arguments to check they are correct.
+            println!("jaxpr: {:#?}", jaxpr);
+            println!("consts: {:?}", consts);
+            println!("args: {:?}", args);
+        }
 
         // Convert the input arguments to array views and evaluate the Jaxpr.
         let out_arrs = Interpreter::eval_jaxpr(
