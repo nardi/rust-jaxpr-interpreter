@@ -15,6 +15,11 @@ mod rust_jaxpr_interpreter {
     use pyo3::types::PyList;
 
     #[pyfunction]
+    fn parse_jaxpr<'py>(jaxpr: Jaxpr<'py>) -> String {
+        format!("{:#?}", jaxpr)
+    }
+
+    #[pyfunction]
     #[pyo3(signature = (jaxpr, consts, *args))]
     fn eval_jaxpr<'py>(
         py: Python<'py>,

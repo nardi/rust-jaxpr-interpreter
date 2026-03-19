@@ -1,14 +1,20 @@
 from collections.abc import Callable
+import functools
 from typing import Any
+import logging
 
 import jax
 import jax.core
 
 from .rust_jaxpr_interpreter import eval_jaxpr
 
+logger = logging.getLogger(__name__)
+
 __all__ = [
     "eval_jaxpr",
     "execute",
+    "wrap",
+    "jit",
 ]
 
 USE_JAX = False
@@ -39,3 +45,22 @@ def execute(f: Callable, *args, **kwargs) -> Any:
 
     # Convert the results to the proper structure and return.
     return jax.tree.unflatten(out_tree, flat_result)
+
+
+def wrap(f: Callable):
+    """Wraps a function f into a function that traces it and executes the result with the Rust
+    interpreter."""
+
+    @functools.wraps(f)
+    def _execute(*args, **kwargs):
+        return execute(f, *args, **kwargs)
+
+    return _execute
+
+
+def jit(f: Callable, *ignored_args, **ignored_kwargs):
+    """Alias of `wrap`, but accepts extra arguments for compatibility with `jax.jit`."""
+    if ignored_args or ignored_kwargs:
+        logger.warning("Extra arguments to `jit` are ignored.")
+
+    return wrap(f)
