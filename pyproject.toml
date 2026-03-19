@@ -13,6 +13,6 @@ classifiers = [
 dynamic = ["version", "description", "readme"]
 dependencies = ["jax>=0.4.13", "numpy>=2.4.2"]
 [project.optional-dependencies]
-tests = ["pytest"]
+tests = ["pytest", "optimistix"]
 [tool.maturin]
 python-source = "python"
