@@ -2,7 +2,7 @@ use enum_dispatch::enum_dispatch;
 use ndarray::{ArrayD, ArrayViewD};
 use pyo3::PyErr;
 
-use crate::jaxpr::binary_primitives::{AddPrimitive, BinaryJaxprEqn, MulPrimitive};
+use crate::jaxpr::binary::{AddPrimitive, BinaryJaxprEqn, MulPrimitive};
 
 use super::{EvalJaxprEqn, Interpreter, JaxprValue};
 

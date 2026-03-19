@@ -62,6 +62,15 @@ impl<'py> Interpreter<'py> {
             .ok_or(PyKeyError::new_err("Tried to read unknown variable"))
     }
 
+    /// Read multiple values from the interpreter environment and return read-only references.
+    fn read(&self, vars: &[Var]) -> Result<Box<[&JaxprValue<'py>]>, PyErr> {
+        Ok(vars
+            .iter()
+            .map(|var| self.read_one(var))
+            .collect::<Result<Vec<_>, _>>()?
+            .into_boxed_slice())
+    }
+
     /// Depending on the value of `atom`, either read the associated value from the interpreter
     /// environment or return a view on the literal value stored within.
     fn read_or_resolve_one(&self, atom: &'py Atom<'py>) -> Result<ArrayViewD<'_, f64>, PyErr> {
@@ -149,5 +158,6 @@ impl<'py> EvalJaxprEqn<'py> for UnknownEqn<'py> {
     }
 }
 
-pub mod binary_primitives;
-pub mod unary_primitives;
+pub mod binary;
+pub mod higher_order;
+pub mod unary;

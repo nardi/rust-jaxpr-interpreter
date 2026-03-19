@@ -2,7 +2,7 @@ use enum_dispatch::enum_dispatch;
 use ndarray::{ArrayD, ArrayViewD};
 use pyo3::PyErr;
 
-use crate::jaxpr::unary_primitives::{IntegerPowPrimitive, SinPrimitive, UnaryJaxprEqn};
+use crate::jaxpr::unary::{IntegerPowPrimitive, SinPrimitive, UnaryJaxprEqn};
 
 use super::{EvalJaxprEqn, Interpreter, JaxprValue};
 
@@ -23,8 +23,6 @@ impl<'py> EvalJaxprEqn<'py> for UnaryJaxprEqn {
         Ok(())
     }
 }
-
-// .powi(self.primitive.y)
 
 impl EvalUnaryJaxprPrimitive for IntegerPowPrimitive {
     fn eval_primitive(&self, val: ArrayViewD<f64>) -> ArrayD<f64> {

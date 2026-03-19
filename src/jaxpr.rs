@@ -47,7 +47,6 @@ pub struct Literal<'py> {
     pub aval: AbstractValue,
 }
 
-#[allow(dead_code)]
 #[derive(Debug, FromPyObject)]
 pub enum Atom<'py> {
     Var(Var),
@@ -67,17 +66,20 @@ pub struct UnknownEqn<'py> {
     pub params: Bound<'py, PyDict>,
 }
 
-pub mod binary_primitives;
-pub mod unary_primitives;
+pub mod binary;
+pub mod higher_order;
+pub mod unary;
 
-use binary_primitives::BinaryJaxprEqn;
-use unary_primitives::UnaryJaxprEqn;
+use binary::BinaryJaxprEqn;
+use higher_order::HigherOrderJaxprEqn;
+use unary::UnaryJaxprEqn;
 
 #[derive(Debug, FromPyObject)]
 #[enum_dispatch]
 pub enum JaxprEqn<'py> {
     Unary(UnaryJaxprEqn),
     Binary(BinaryJaxprEqn<'py>),
+    HigherOrder(HigherOrderJaxprEqn<'py>),
     Unknown(UnknownEqn<'py>),
 }
 
@@ -88,4 +90,10 @@ pub struct Jaxpr<'py> {
     pub invars: BoxedSlice<Var>,
     pub outvars: BoxedSlice<Atom<'py>>,
     pub eqns: BoxedSlice<JaxprEqn<'py>>,
+}
+
+#[derive(Debug, FromPyObject)]
+pub struct ClosedJaxpr<'py> {
+    pub jaxpr: Jaxpr<'py>,
+    pub consts: BoxedSlice<PyArrayLikeDyn<'py, f64, AllowTypeChange>>,
 }

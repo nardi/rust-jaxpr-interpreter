@@ -5,7 +5,7 @@ use super::Var;
 
 // These imports are necessary for enum_dispatch to work. TODO: figure out why, it kind of ruins the
 // separation of the IR and the interpreter.
-use crate::interpreter::unary_primitives::EvalUnaryJaxprPrimitive;
+use crate::interpreter::unary::EvalUnaryJaxprPrimitive;
 use ndarray::{ArrayD, ArrayViewD};
 
 #[derive(Debug, FromPyObject, Eq, PartialEq)]

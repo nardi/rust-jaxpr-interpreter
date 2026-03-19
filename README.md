@@ -11,6 +11,7 @@ In the future, it would also be interesting to explore execution of [shape-polym
 - The basic Jaxpr data model and parsing from Python data structures via PyO3.
 - A basic interpreter in the vein of `jax.core.eval_jaxpr`.
 - A few test primitives: `integer_pow`, `sin`, `add`, `mul`.
+- Higher-order primitives that evaluate another Jaxpr: `jit` and `custom_jvp_call`.
 
 Not much, but having the basic structure already gives a good starting point for further extension :)
 

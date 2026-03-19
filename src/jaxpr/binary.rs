@@ -5,7 +5,7 @@ use super::{Atom, Var};
 
 // These imports are necessary for enum_dispatch to work. TODO: figure out why, it kind of ruins the
 // separation of the IR and the interpreter.
-use crate::interpreter::binary_primitives::EvalBinaryJaxprPrimitive;
+use crate::interpreter::binary::EvalBinaryJaxprPrimitive;
 use ndarray::{ArrayD, ArrayViewD};
 
 #[derive(Debug, Eq, PartialEq)]
